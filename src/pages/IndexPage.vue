@@ -1,5 +1,5 @@
 <template>
-  <q-page class="">
+  <q-page class="page-background">
     <div class="q-pa-md q-gutter-sm">
       <q-btn color="black" :label="counter" size="xl" class="full-width q-mb-md"/>
       <div class="row">
@@ -35,3 +35,9 @@
   }
 
 </script>
+
+<style>
+  .page-background {
+    background-color: white;
+  }
+</style>
