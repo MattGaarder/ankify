@@ -162,7 +162,10 @@ app.whenReady().then(() => {
 
   // Create a tray icon using the custom Anki logo
   const trayPath = path.resolve(process.cwd(), 'src-electron/icons/ankiTrayTemplate.png');
-  const trayImage = nativeImage.createFromPath(trayPath).resize({ width: 18, height: 18 });
+  let trayImage = nativeImage.createFromPath(trayPath);
+  if (trayImage.getSize().width > 18) {
+    trayImage = trayImage.resize({ width: 18, height: 18 });
+  }
   trayImage.setTemplateImage(true);
   tray = new Tray(trayImage);
   tray.setToolTip('Ankify');
