@@ -208,6 +208,16 @@ app.on('before-quit', () => {
   isQuitting = true;
 });
 
+// Ensure Electron exits cleanly when Ctrl+C (SIGINT) or SIGTERM is sent in the terminal
+process.on('SIGINT', () => {
+  isQuitting = true;
+  app.quit();
+});
+process.on('SIGTERM', () => {
+  isQuitting = true;
+  app.quit();
+});
+
 app.on('window-all-closed', () => {
   console.log('[main] all windows closed');
   if (platform !== 'darwin') {
