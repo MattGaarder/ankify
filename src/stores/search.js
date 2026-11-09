@@ -48,7 +48,7 @@ export const useSearchStore = defineStore('search', () => {
       tokens.value = tks
 
       const surfaced = tks
-        .filter(t => ['名詞', '動詞', '形容詞'].includes(t.pos))
+        .filter(t => ['名詞', '動詞', '形容詞', '副詞', '連体詞', '感動詞', '接続詞'].includes(t.pos))
         .map(t => (t.basic_form && t.basic_form !== '*') ? t.basic_form : t.surface_form)
 
       surfaced.unshift(q)
