@@ -79,7 +79,10 @@ export const useSearchStore = defineStore('search', () => {
       const all = await Promise.all(
         tokensToLookup.map(async term => {
           const res = await window.ankify?.dictLookup?.(term)
-          if (!res?.ok) return { term, items: [] }
+          if (!res?.ok) {
+            console.warn('[searchStore] dictLookup failed for term:', term, res?.error)
+            return { term, items: [] }
+          }
           const data = res.data?.data ?? []
           const items = data.map(normalizeItem)
           return { term, items }
@@ -105,25 +108,26 @@ export const useSearchStore = defineStore('search', () => {
 
       const kanjiGroups = new Map()
       for (const item of deduped) {
-        const kanji = item.word
-        if (!kanji) continue
+        const key = item.word || item.reading
+        if (!key) continue
 
-        if (!kanjiGroups.has(kanji)) {
+        if (!kanjiGroups.has(key)) {
           const sensesWithReadings = item.senses.map(sense => ({
             text: sense,
-            reading: item.reading
+            reading: item.reading || item.word
           }))
 
-          kanjiGroups.set(kanji, {
-            word: kanji,
-            readings: new Set([item.reading]),
+          kanjiGroups.set(key, {
+            word: item.word || item.reading,
+            reading: item.reading || item.word,
+            readings: new Set([item.reading || item.word].filter(Boolean)),
             senses: [...item.senses],
             sensesWithReadings,
             gloss: item.gloss,
             raw: item.raw
           })
         } else {
-          const group = kanjiGroups.get(kanji)
+          const group = kanjiGroups.get(key)
           if (item.reading) group.readings.add(item.reading)
 
           for (const sense of item.senses) {
@@ -131,7 +135,7 @@ export const useSearchStore = defineStore('search', () => {
             if (!existing) {
               group.sensesWithReadings.push({
                 text: sense,
-                reading: item.reading
+                reading: item.reading || item.word
               })
               group.senses.push(sense)
             }
@@ -140,27 +144,33 @@ export const useSearchStore = defineStore('search', () => {
       }
 
       const grouped = Array.from(kanjiGroups.values()).map(group => {
-        const readingsArray = Array.from(group.readings)
+        const readingsArray = Array.from(group.readings).filter(Boolean)
+        const primaryReading = group.reading || readingsArray[0] || ''
+        const hasKanji = group.word && primaryReading && group.word !== primaryReading
         return {
           word: group.word,
-          reading: readingsArray[0],
+          reading: primaryReading,
           readings: readingsArray,
           sensesWithReadings: group.sensesWithReadings,
-          headword: readingsArray.length > 1
-            ? `${group.word}【${readingsArray.join('、')}】`
-            : `${group.word}【${readingsArray[0]}】`,
+          headword: hasKanji
+            ? (readingsArray.length > 1
+                ? `${group.word}【${readingsArray.join('、')}】`
+                : `${group.word}【${primaryReading}】`)
+            : (group.word || primaryReading),
           gloss: group.gloss,
           senses: group.senses,
           raw: group.raw
         }
       })
 
-      const original = originalSelection.value
+      const original = originalSelection.value || ''
       const primary = []
       const secondary = []
 
       for (const item of grouped) {
-        if (item.word && original.includes(item.word)) {
+        const matchWord = item.word
+        const matchReading = item.reading
+        if ((matchWord && original.includes(matchWord)) || (matchReading && original.includes(matchReading))) {
           primary.push(item)
         } else {
           secondary.push(item)

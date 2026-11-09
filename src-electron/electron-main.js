@@ -243,13 +243,21 @@ ipcMain.handle('window:resize', (_event, { width, height }) => {
 ipcMain.handle('dict:lookup', async (_event, query) => {
   if (!query || typeof query !== 'string') return { ok: false, error: 'Empty query' };
   try {
-    const url = `https://jisho.org/api/v1/search/words?keyword=${encodeURIComponent(query)}`
-    const res = await fetch(url)
-    if (!res.ok) return { ok: false, error: `HTTP ${res.status}` }
-    const json = await res.json()
-    return { ok: true, data: json }
+    const url = `https://jisho.org/api/v1/search/words?keyword=${encodeURIComponent(query)}`;
+    const res = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }
+    });
+    if (!res.ok) {
+      console.error(`[main] Jisho lookup HTTP error ${res.status} for "${query}"`);
+      return { ok: false, error: `HTTP ${res.status}` };
+    }
+    const json = await res.json();
+    return { ok: true, data: json };
   } catch (err) {
-    return { ok: false, error: String(err) }
+    console.error(`[main] Jisho lookup exception for "${query}":`, err);
+    return { ok: false, error: String(err) };
   }
 });
 // --- IPC: AnkiConnect bridge ------------------------------------------------
