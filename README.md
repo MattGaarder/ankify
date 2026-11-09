@@ -111,10 +111,6 @@ sequenceDiagram
 | `tokenize(text)` | `morph:tokenize` | `invoke` / `handle` | Tokenizes Japanese string via Kuromoji and returns morphological metadata. |
 | `dictLookup(text)` | `dict:lookup` | `invoke` / `handle` | Queries Jisho REST API from Main process (bypassing browser CORS). |
 | `invokeAnki(action, params)` | `ankiconnect:invoke` | `invoke` / `handle` | Sends JSON-RPC v6 payloads to local AnkiConnect server on port `8765`. |
-| `hidePopover()` | `window:hide` | `invoke` / `handle` | Hides the tray popover window without destroying renderer state. |
-| `closePopover()` | `window:close` | `invoke` / `handle` | Closes the BrowserWindow instance. |
-| `minimize()` | `window:minimize` | `invoke` / `handle` | Minimizes the popover window. |
-| `toggleMaximize()` | `window:toggle-maximize` | `invoke` / `handle` | Toggles window maximization state. |
 | `resize(width, height)` | `window:resize` | `invoke` / `handle` | Dynamically resizes window bounds clamped to display work area. |
 | `log(...args)` | `ankify:log` | `send` / `on` | One-way fire-and-forget logging from Renderer to Main terminal stdout. |
 
@@ -131,10 +127,6 @@ Instead of exposing `ipcRenderer` directly to the frontend (which would allow ar
 import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('ankify', {
-  hidePopover: () => ipcRenderer.invoke('window:hide'),
-  closePopover: () => ipcRenderer.invoke('window:close'),
-  minimize: () => ipcRenderer.invoke('window:minimize'),
-  toggleMaximize: () => ipcRenderer.invoke('window:toggle-maximize'),
   resize: (width, height) => ipcRenderer.invoke('window:resize', { width, height }),
   dictLookup: (text) => ipcRenderer.invoke('dict:lookup', text),
   log: (...args) => ipcRenderer.send('ankify:log', args),

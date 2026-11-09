@@ -1,5 +1,25 @@
 // app global css in SCSS form
 
+html,
+body,
+#q-app {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
 // Global dark scrollbar
 ::-webkit-scrollbar {
   width: 8px;

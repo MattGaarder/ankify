@@ -1,13 +1,8 @@
 <template>
-  <div class="title-bar column no-wrap q-px-sm bg-dark text-white q-py-xs">
-    <!-- Top Row: Window Controls & Actions -->
-    <div class="row justify-between items-center full-width q-mb-xs">
-      <!-- Window Controls (Mac-style) -->
-      <div class="window-controls row no-wrap q-gutter-x-xs">
-        <div class="control-btn close" @click="closeWindow"></div>
-        <div class="control-btn minimize" @click="minimizeWindow"></div>
-        <div class="control-btn maximize" @click="toggleMaximize"></div>
-      </div>
+  <div class="title-bar column no-wrap bg-dark text-white">
+    <!-- Top Row: Native macOS Traffic Lights Space & Draggable Header -->
+    <div class="title-bar-header row justify-between items-center full-width">
+      <div class="title-bar-brand text-caption text-grey-5">Ankify</div>
     </div>
 
     <!-- Bottom Row: Search/Input Area -->
@@ -33,18 +28,6 @@ const inputHeight = ref(250)
 const isDragging = ref(false)
 const startY = ref(0)
 const startHeight = ref(0)
-
-function closeWindow() {
-  window.ankify.hidePopover()
-}
-
-function minimizeWindow() {
-  window.ankify.minimize()
-}
-
-function toggleMaximize() {
-  window.ankify.toggleMaximize()
-}
 
 function onTextSelect(event) {
   const input = event.target
@@ -123,57 +106,28 @@ function stopDrag() {
   width: 100%;
   -webkit-app-region: drag;
   user-select: none;
-  /* border-bottom: 1px solid white;  Removed static border */
+  -webkit-user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
   transition: height 0.2s;
 }
 
-.window-controls {
+.title-bar-header {
+  min-height: 44px;
+  padding-left: 80px;
+  padding-right: 16px;
+  -webkit-app-region: drag;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.title-bar :deep(button),
+.title-bar :deep(input),
+.title-bar :deep(textarea),
+.title-bar :deep(select),
+.title-bar :deep(.q-btn),
+.title-bar :deep(.q-field),
+.title-bar :deep(.q-icon) {
   -webkit-app-region: no-drag;
-}
-
-.control-btn {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  cursor: pointer;
-  position: relative;
-}
-
-.control-btn.close {
-  background-color: #ff5f56;
-}
-
-.control-btn.minimize {
-  background-color: #ffbd2e;
-}
-
-.control-btn.maximize {
-  background-color: #27c93f;
-}
-
-.control-btn:hover::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: rgba(0, 0, 0, 0.5);
-  font-size: 8px;
-  font-weight: bold;
-  font-family: sans-serif;
-}
-
-.control-btn.close:hover::after {
-  content: 'x';
-}
-
-.control-btn.minimize:hover::after {
-  content: '-';
-  top: 55%;
-}
-
-.control-btn.maximize:hover::after {
-  content: '+';
 }
 
 .title-input-wrapper {

@@ -30,6 +30,7 @@ const currentDir = fileURLToPath(new URL('.', import.meta.url));
 // Globals for window/tray references.
 let mainWindow = null
 let tray = null
+let isQuitting = false
 
 // We expect kuromoji dict here:
 // `project-root/node_modules/kuromoji/dict`
@@ -56,7 +57,7 @@ function getTokenizer() {
 // --- Small helper --------------------------------------------------
 const platform = process.platform || os.platform();
 
-// Create the frameless window that behaves like a popover.
+// Create the window using native macOS window chrome and traffic lights.
 async function createWindow () {
   mainWindow = new BrowserWindow({
     width: 500,
@@ -64,11 +65,15 @@ async function createWindow () {
     minWidth: 400,
     minHeight: 300,
     show: false,
-    frame: false,
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 16, y: 16 },
     resizable: true,
     alwaysOnTop: false,
     skipTaskbar: false,
     transparent: false,
+    backgroundColor: '#1d1d1d',
+    vibrancy: 'under-window',
+    visualEffectState: 'active',
     webPreferences: {
       devTools: true,
       // Isolate main & renderer for security.
@@ -90,6 +95,14 @@ async function createWindow () {
     console.log('[main] loading PROD index.html')
     await mainWindow.loadFile('index.html')
   }
+  // Intercept close to hide popover unless app is quitting.
+  mainWindow.on('close', (event) => {
+    if (!isQuitting) {
+      event.preventDefault()
+      mainWindow.hide()
+    }
+  });
+
   // Cleanup reference when window is closed.
   mainWindow.on('closed', () => {
     console.log('[main] window closed')
@@ -191,6 +204,10 @@ app.whenReady().then(() => {
   if (process.env.DEBUGGING && mainWindow) mainWindow.webContents.openDevTools({ mode: 'detach' })
 });
 
+app.on('before-quit', () => {
+  isQuitting = true;
+});
+
 app.on('window-all-closed', () => {
   console.log('[main] all windows closed');
   if (platform !== 'darwin') {
@@ -203,27 +220,12 @@ app.on('activate', () => {
   console.log('[main] activate event');
   if (mainWindow === null) {
     createWindow();
+  } else {
+    mainWindow.show();
+    mainWindow.focus();
   }
 });
-// --- IPC: window control endpoints -------------------------------------
-ipcMain.handle('window:hide', () => {
-  if (mainWindow && !mainWindow.isDestroyed()) mainWindow.hide();
-});
-ipcMain.handle('window:close', () => {
-  if (mainWindow && !mainWindow.isDestroyed()) mainWindow.close();
-});
-ipcMain.handle('window:minimize', () => {
-  if (mainWindow && !mainWindow.isDestroyed()) mainWindow.minimize();
-});
-ipcMain.handle('window:toggle-maximize', () => {
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    if (mainWindow.isMaximized()) {
-      mainWindow.unmaximize();
-    } else {
-      mainWindow.maximize();
-    }
-  }
-});
+// --- IPC: window resize endpoint ---------------------------------------
 ipcMain.handle('window:resize', (_event, { width, height }) => {
   if (mainWindow && !mainWindow.isDestroyed()) {
     // Optional: Limit height to work area
