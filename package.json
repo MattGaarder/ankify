@@ -1,8 +1,8 @@
 {
   "name": "ankify",
-  "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "ankify",
+  "version": "0.1.0",
+  "description": "Take Japanese text from anywhere, parse the tokens via a seamless desktop popover, and export the desired vocabulary straight to a local Anki deck.",
+  "productName": "Ankify",
   "author": "Matt Gaarder <matteus.gaarder@gmail.com>",
   "type": "module",
   "private": true,
