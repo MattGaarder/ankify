@@ -226,7 +226,7 @@ function onCopy(item) {
 }
 
 .results-container {
-  /* Right padding is 0 because the 14px scrollbar has 4px transparent borders on both left & right of the 6px thumb */
-  padding: 8px 0 8px 8px;
+  /* Top/bottom 6px matches ::-webkit-scrollbar-track margin-top/bottom so scrollbar aligns with top of first card */
+  padding: 6px 0 6px 8px;
 }
 </style>

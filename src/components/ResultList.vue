@@ -6,24 +6,24 @@
       <q-card v-for="(it, idx) in primaryItems" :key="`primary-${it.headword}`" flat class="result-card"
         :class="{ 'is-dismissed': dismissing.has(it.headword) }"
         :style="!supportsSiblingIndex ? { '--sibling-index': idx + 1 } : undefined">
-        <div class="card-header row items-start justify-between no-wrap">
-          <div class="col q-pr-xs">
-            <div class="card-headword">{{ getSelectedHeadword(idx, it) }}</div>
-            <div class="card-gloss">{{ getSelectedGloss(idx, it) }}</div>
+        <div class="card-header column">
+          <div class="row items-center justify-between no-wrap full-width">
+            <div class="card-headword col q-pr-xs">{{ getSelectedHeadword(idx, it) }}</div>
+            <div class="col-auto row items-center no-wrap card-controls">
+              <div class="selection-count">{{ (selected[idx] || []).length }}/{{ it.senses.length }}</div>
+              <q-btn dense flat no-caps size="sm" label="Select all" class="selection-btn" @click="selectAll(idx, it)"
+                :title="'Select all senses'" />
+              <q-btn dense flat no-caps size="sm" label="Clear" class="selection-btn" @click="selectNone(idx)"
+                :title="'Deselect all'" />
+              <q-btn dense flat class="action-btn" icon="add" :disable="(selected[idx] || []).length === 0"
+                :loading="addingItems.has(it.headword)" :title="'Add to Anki (only selected senses)'"
+                @click="emitAdd(idx, it)" />
+              <q-btn dense flat class="action-btn" icon="content_copy" @click="$emit('copy', it)" :title="'Copy'" />
+              <q-btn dense flat class="action-btn action-btn-close" icon="close"
+                @click="handleRemove(it, $event)" :title="'Remove'" />
+            </div>
           </div>
-          <div class="col-auto row items-center no-wrap card-controls">
-            <div class="selection-count">{{ (selected[idx] || []).length }}/{{ it.senses.length }}</div>
-            <q-btn dense flat no-caps size="sm" label="Select all" class="selection-btn" @click="selectAll(idx, it)"
-              :title="'Select all senses'" />
-            <q-btn dense flat no-caps size="sm" label="Clear" class="selection-btn" @click="selectNone(idx)"
-              :title="'Deselect all'" />
-            <q-btn dense flat class="action-btn" icon="add" :disable="(selected[idx] || []).length === 0"
-              :loading="addingItems.has(it.headword)" :title="'Add to Anki (only selected senses)'"
-              @click="emitAdd(idx, it)" />
-            <q-btn dense flat class="action-btn" icon="content_copy" @click="$emit('copy', it)" :title="'Copy'" />
-            <q-btn dense flat class="action-btn action-btn-close" icon="close"
-              @click="handleRemove(it, $event)" :title="'Remove'" />
-          </div>
+          <div class="card-gloss full-width">{{ getSelectedGloss(idx, it) }}</div>
         </div>
 
         <!-- Full-width divider between card preview and selector -->
@@ -78,25 +78,25 @@
           <q-card v-for="(it, idx) in secondaryItems" :key="`secondary-${it.headword}`" flat class="result-card"
             :class="{ 'is-dismissed': dismissing.has(it.headword) }"
             :style="!supportsSiblingIndex ? { '--sibling-index': idx + 1 } : undefined">
-            <div class="card-header row items-start justify-between no-wrap">
-              <div class="col q-pr-xs">
-                <div class="card-headword">{{ getSelectedHeadwordSecondary(idx, it) }}</div>
-                <div class="card-gloss">{{ getSelectedGlossSecondary(idx, it) }}</div>
+            <div class="card-header column">
+              <div class="row items-center justify-between no-wrap full-width">
+                <div class="card-headword col q-pr-xs">{{ getSelectedHeadwordSecondary(idx, it) }}</div>
+                <div class="col-auto row items-center no-wrap card-controls">
+                  <div class="selection-count">{{ (secondarySelected[idx] || []).length }}/{{ it.senses.length }}</div>
+                  <q-btn dense flat no-caps size="sm" label="Select all" class="selection-btn"
+                    @click="selectAllSecondary(idx, it)" :title="'Select all senses'" />
+                  <q-btn dense flat no-caps size="sm" label="Clear" class="selection-btn"
+                    @click="selectNoneSecondary(idx)" :title="'Deselect all'" />
+                  <q-btn dense flat icon="add" :disable="(secondarySelected[idx] || []).length === 0"
+                    :loading="addingItems.has(it.headword)" :title="'Add to Anki (only selected senses)'"
+                    class="action-btn" @click="emitAddSecondary(idx, it)" />
+                  <q-btn dense flat icon="content_copy" class="action-btn" @click="$emit('copy', it)"
+                    :title="'Copy'" />
+                  <q-btn dense flat icon="close" class="action-btn action-btn-close"
+                    @click="handleRemove(it, $event)" :title="'Remove'" />
+                </div>
               </div>
-              <div class="col-auto row items-center no-wrap card-controls">
-                <div class="selection-count">{{ (secondarySelected[idx] || []).length }}/{{ it.senses.length }}</div>
-                <q-btn dense flat no-caps size="sm" label="Select all" class="selection-btn"
-                  @click="selectAllSecondary(idx, it)" :title="'Select all senses'" />
-                <q-btn dense flat no-caps size="sm" label="Clear" class="selection-btn"
-                  @click="selectNoneSecondary(idx)" :title="'Deselect all'" />
-                <q-btn dense flat icon="add" :disable="(secondarySelected[idx] || []).length === 0"
-                  :loading="addingItems.has(it.headword)" :title="'Add to Anki (only selected senses)'"
-                  class="action-btn" @click="emitAddSecondary(idx, it)" />
-                <q-btn dense flat icon="content_copy" class="action-btn" @click="$emit('copy', it)"
-                  :title="'Copy'" />
-                <q-btn dense flat icon="close" class="action-btn action-btn-close"
-                  @click="handleRemove(it, $event)" :title="'Remove'" />
-              </div>
+              <div class="card-gloss full-width">{{ getSelectedGlossSecondary(idx, it) }}</div>
             </div>
 
             <!-- Full-width divider between card preview and selector -->

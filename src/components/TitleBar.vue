@@ -174,15 +174,14 @@ function stopDrag() {
 
 .title-input-wrapper::-webkit-scrollbar-track {
   background: transparent;
+  margin-top: 3px;
+  margin-bottom: 3px;
 }
 
 .title-input-wrapper::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.36);
   border-radius: 9999px;
-  border-right: 4px solid transparent;
-  border-left: 2px solid transparent;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
+  border: 3px solid transparent;
   background-clip: padding-box;
 }
 
