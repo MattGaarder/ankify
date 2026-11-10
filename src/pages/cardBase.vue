@@ -60,22 +60,19 @@
     • We dedupe final results by a computed "key" (headword) using a Set to avoid duplicate cards.
 -->
 <template>
-  <q-page class="page-background">
-    <div class="q-pa-md q-gutter-sm">
-      <!-- Input moved to TitleBar -->
+  <div class="page-background">
+    <div class="results-container">
+      <!-- Input & loading bar located in TitleBar -->
 
-      <div class="q-mt-md">
-        <q-linear-progress v-if="searchStore.loading" indeterminate />
-        <q-banner v-if="searchStore.errorMsg" class="q-mt-sm" dense rounded>
-          {{ searchStore.errorMsg }}
-        </q-banner>
-        <ResultList
-          v-if="!searchStore.loading && (searchStore.primaryResults.length || searchStore.secondaryResults.length)"
-          :primary-items="searchStore.primaryResults" :secondary-items="searchStore.secondaryResults"
-          :adding-items="addingItems" @add-note="onAddNote" @copy="onCopy" @remove="onRemove" />
-      </div>
+      <q-banner v-if="searchStore.errorMsg" class="q-mb-sm" dense rounded>
+        {{ searchStore.errorMsg }}
+      </q-banner>
+      <ResultList
+        v-if="!searchStore.loading && (searchStore.primaryResults.length || searchStore.secondaryResults.length)"
+        :primary-items="searchStore.primaryResults" :secondary-items="searchStore.secondaryResults"
+        :adding-items="addingItems" @add-note="onAddNote" @copy="onCopy" @remove="onRemove" />
     </div>
-  </q-page>
+  </div>
 </template>
 
 <script setup>
@@ -225,6 +222,11 @@ function onCopy(item) {
 
 <style>
 .page-background {
-  background-color: transparent;
+  background-color: #202020;
+}
+
+.results-container {
+  /* Right padding is 0 because the 14px scrollbar has 4px transparent borders on both left & right of the 6px thumb */
+  padding: 8px 0 8px 8px;
 }
 </style>

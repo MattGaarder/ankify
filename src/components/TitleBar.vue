@@ -1,20 +1,21 @@
 <template>
-  <div class="title-bar column no-wrap bg-dark text-white">
+  <div class="title-bar column no-wrap text-white">
     <!-- Top Row: Native macOS Traffic Lights Space & Draggable Header -->
-    <div class="title-bar-header row justify-between items-center full-width">
-      <div class="title-bar-brand text-caption text-grey-5">Ankify</div>
-    </div>
+    <div class="title-bar-header row items-center full-width"></div>
 
     <!-- Bottom Row: Search/Input Area -->
-    <div class="title-input-wrapper full-width q-px-md scroll-y" :style="{ height: inputHeight + 'px' }">
+    <div class="title-input-wrapper full-width scroll-y" :style="{ height: inputHeight + 'px' }">
       <q-input ref="inputRef" v-model="searchStore.text" borderless dense type="textarea" placeholder="Search..."
         class="title-input full-width" input-class="text-white"
         input-style="min-height: 24px; line-height: 1.5; resize: none;" @mouseup="onTextSelect" @keyup="onTextSelect"
         @paste="onPaste" />
     </div>
 
-    <!-- Resize Handle -->
-    <div class="resize-handle full-width" @mousedown="startDrag"></div>
+    <!-- Divider & Resize Handle (with grounded full-width loading bar) -->
+    <div class="resize-handle full-width" @mousedown="startDrag">
+      <q-linear-progress v-if="searchStore.loading" indeterminate color="white" track-color="transparent"
+        class="divider-progress" />
+    </div>
   </div>
 </template>
 
@@ -104,6 +105,7 @@ function stopDrag() {
 <style scoped>
 .title-bar {
   width: 100%;
+  background-color: #191919;
   -webkit-app-region: drag;
   user-select: none;
   -webkit-user-select: none;
@@ -112,9 +114,10 @@ function stopDrag() {
 }
 
 .title-bar-header {
-  min-height: 44px;
-  padding-left: 80px;
-  padding-right: 16px;
+  height: 28px;
+  min-height: 28px;
+  background-color: #191919;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   -webkit-app-region: drag;
   user-select: none;
   -webkit-user-select: none;
@@ -131,6 +134,8 @@ function stopDrag() {
 }
 
 .title-input-wrapper {
+  background-color: #191919;
+  padding: 6px 0 6px 10px;
   -webkit-app-region: no-drag;
   overflow-y: auto;
   display: flex;
@@ -153,16 +158,18 @@ function stopDrag() {
 
 :deep(.title-input .q-field__control) {
   height: 100%;
+  min-height: unset;
 }
 
 :deep(.title-input textarea) {
   height: 100% !important;
+  padding: 0 !important;
   resize: none;
 }
 
 /* Custom scrollbar for the input area */
 .title-input-wrapper::-webkit-scrollbar {
-  width: 6px;
+  width: 14px;
 }
 
 .title-input-wrapper::-webkit-scrollbar-track {
@@ -170,27 +177,50 @@ function stopDrag() {
 }
 
 .title-input-wrapper::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.36);
+  border-radius: 9999px;
+  border-right: 4px solid transparent;
+  border-left: 2px solid transparent;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  background-clip: padding-box;
 }
 
 .title-input-wrapper::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.52);
 }
 
 .resize-handle {
-  height: 8px;
-  background: rgba(255, 255, 255, 0.15);
+  position: relative;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
   cursor: ns-resize;
   -webkit-app-region: no-drag;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.4);
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease;
   flex-shrink: 0;
 }
 
+.resize-handle::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -4px;
+  bottom: -4px;
+  z-index: 2;
+}
+
 .resize-handle:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-bottom-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.divider-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: 2px;
+  z-index: 3;
 }
 
 /* Custom styling for q-input to match the look */

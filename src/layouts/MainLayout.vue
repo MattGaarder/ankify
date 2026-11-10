@@ -1,13 +1,11 @@
 <template>
-  <q-layout view="lHh Lpr lFf" class="bg-grey-10 text-white"> <!-- Changed background to dark for visual identity -->
-    <q-header class="bg-transparent">
-      <TitleBar />
-    </q-header>
+  <div class="app-layout column no-wrap text-white">
+    <TitleBar />
 
-    <q-page-container>
+    <main class="senses-scroll-area col">
       <router-view />
-    </q-page-container>
-  </q-layout>
+    </main>
+  </div>
 </template>
 
 <script setup>
@@ -89,3 +87,20 @@ function updateWindowSize() {
 }
 */
 </script>
+
+<style scoped>
+.app-layout {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: #202020;
+}
+
+.senses-scroll-area {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  background-color: #202020;
+}
+</style>
