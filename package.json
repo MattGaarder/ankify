@@ -10,7 +10,10 @@
     "lint": "eslint -c ./eslint.config.js \"./src*/**/*.{js,cjs,mjs,vue}\"",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
+    "dev:electron": "quasar dev -m electron",
     "build": "quasar build",
+    "build:electron": "quasar build -m electron",
+    "ship": "quasar build -m electron && rm -rf /Applications/Ankify.app && cp -R dist/electron/Packaged/Ankify-darwin-*/Ankify.app /Applications/",
     "postinstall": "quasar prepare"
   },
   "dependencies": {

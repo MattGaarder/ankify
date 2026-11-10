@@ -179,8 +179,8 @@ export default defineConfig((/* ctx */) => {
         // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
 
         // OS X / Mac App Store
-        // appBundleId: '',
-        // appCategoryType: '',
+        appBundleId: 'com.ankify.app',
+        appCategoryType: 'public.app-category.education',
         // osxSign: '',
         // protocol: 'myapp://path',
 
